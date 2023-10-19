@@ -1,9 +1,9 @@
 import {useState} from "react";
 import {Input} from "@/components/ui/Input";
-import {Button} from "@/components/ui/Button";
-import GoogleIcon from '@/assets/icons/google.svg?component';
+import GoogleIcon from './../../../../assets/icons/google.svg?react';
 import axiosClient from "@/axios.ts";
 import {SvgIcon} from "@mui/material";
+import {Button} from "@/components/ui/Button";
 
 
 type AuthData = {
@@ -28,12 +28,12 @@ export const SignUpForm = () => {
     }
 
     const googleSignup = () => {
-        axiosClient.post('/auth/google').then((response) => {
+        axiosClient.post('auth/google').then((response) => {
             if (response.status === 200) {
-                console.log(response.data.redirectUrl);
-                window.location.href = response.data.redirectUrl;
+                console.log(response?.data?.redirectUrl);
+                window.location.href = response?.data?.redirectUrl;
             } else {
-                console.log(data);
+                console.log(response);
             }
         })
     }
@@ -63,7 +63,9 @@ export const SignUpForm = () => {
                         <div className={'top-[15px] w-[130px] h-[1px] bg-[#808080]'}></div>
                     </div>
 
-                    <Button buttonType={'secondary'} icon={<SvgIcon><GoogleIcon/></SvgIcon>} onClick={googleSignup}>Sign
+                    <Button buttonType={'secondary'}
+                            icon={<SvgIcon><GoogleIcon/></SvgIcon>}
+                            onClick={googleSignup}>Sign
                         in with
                         Google</Button>
                 </form>
