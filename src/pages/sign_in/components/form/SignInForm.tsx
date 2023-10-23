@@ -14,7 +14,7 @@ type AuthData = {
     name: string,
 }
 
-export const SignUpForm = () => {
+export const SignInForm = () => {
 
     const [signUpFormData, setSignUpFormData] = useState<AuthData>({} as AuthData);
     // const {login} = useAuth();
@@ -37,15 +37,13 @@ export const SignUpForm = () => {
         })
     }
 
-    const signUp = async (e: FormEvent) => {
+    const signIn = async (e: FormEvent) => {
         e.preventDefault();
         e.stopPropagation();
 
-        const response = await axiosClient.post('auth/sign-up', {
+        const response = await axiosClient.post('auth/sign-in', {
             email: signUpFormData.email,
             password: signUpFormData.password,
-            passwordConfirm: signUpFormData.password,
-            username: 'username',
         })
         if (response.status === 200) {
             window.localStorage.setItem('token', response.data.token);
@@ -56,8 +54,8 @@ export const SignUpForm = () => {
     return (
         <div>
             <div>
-                <h2 className={'text-[24px] font-bold mb-[18px] text-center'}>Sign up</h2>
-                <form onSubmit={signUp} className={'w-[320px]'}>
+                <h2 className={'text-[24px] font-bold mb-[18px] text-center'}>Sign in</h2>
+                <form onSubmit={signIn} className={'w-[320px]'}>
                     <div className={'mb-[18px]'}>
                         <Input type="text" name="email" placeholder={'Enter your email'} onChange={updateAuthData}/>
                     </div>

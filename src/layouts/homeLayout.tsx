@@ -1,4 +1,4 @@
-import {useAuth} from "../authProvider.tsx";
+import {useAuth} from "@/services/auth";
 import {Link, Navigate, Outlet} from "react-router-dom";
 export const HomeLayout = () => {
     const { user } = useAuth();
@@ -11,7 +11,8 @@ export const HomeLayout = () => {
         <div>
             <nav>
                 <Link to="/">Home</Link>
-                <Link to="/login">Login</Link>
+                <Link to="/signin">Sign in</Link>
+                <Link to="/signup">Sign up</Link>
             </nav>
             <Outlet />
         </div>

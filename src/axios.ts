@@ -1,16 +1,32 @@
 import axios from 'axios';
 
-const axiosClient = axios.create();
+const axiosClient = axios.create({
+    baseURL: 'http://localhost:4000/',
+    headers: {
+        // Authorization: `Bearer ${localStorage.getItem("token")}`,
+        'Content-Type': 'application/json',
+    }
+})
 
-axiosClient.defaults.baseURL = 'http://localhost:4000/'
+axiosClient.interceptors.request.use(
+    (config) => {
+        // Get the token from wherever it's stored (e.g., a cookie or local storage)
+        const token = getTokenFromWherever();
 
-axiosClient.defaults.headers = {
-    'Content-Type': 'application/json',
-};
+        // If a token is available, set it in the Authorization header
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
 
-//All request will wait 2 seconds before timeout
-axiosClient.defaults.timeout = 2000;
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
-// axiosClient.defaults.withCredentials = true;
+function getTokenFromWherever() {
+    return localStorage.getItem("token")
+}
 
 export default axiosClient;
