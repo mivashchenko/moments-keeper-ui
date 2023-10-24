@@ -14,6 +14,12 @@ import AuthCallback from "@/pages/google_auth_callback/GoogleAuthCallback.tsx";
 import {HomeLayout} from "@/layouts/homeLayout.tsx";
 import axiosClient from "@/axios.ts";
 import {Profile} from "@/pages/profile/Profile.tsx";
+import {DayViewPage} from "@/pages/day_view";
+
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
 
 const getUserData = async () => {
     return await axiosClient.post('auth/user').then(res => {
@@ -41,7 +47,7 @@ export const router = createBrowserRouter(
             </Route>
 
             <Route path="/view" element={<ProtectedLayout/>}>
-                {/*<Route path="month" element={<ViewMonth/>}/>*/}
+                <Route path="day" element={<DayViewPage/>}/>
                 <Route path="profile" element={<Profile/>}/>
                 <Route path="settings" element={<div>Settings</div>}/>
                 {/*<Route path="calendar" element={<RoundCalendarPage/>}/>*/}

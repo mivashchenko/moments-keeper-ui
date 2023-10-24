@@ -1,11 +1,10 @@
 import {FormEvent, useState} from "react";
-import {Input} from "@/components/ui/Input";
 import GoogleIcon from './../../../../assets/icons/google.svg?react';
 import axiosClient from "@/axios.ts";
-import {SvgIcon} from "@mui/material";
-import {Button} from "@/components/ui/Button";
+import {Button, Input, SvgIcon} from "@mui/material";
 // import {useAuth} from "@/services/auth";
-import {useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom"
+import * as React from "react";
 
 
 type AuthData = {
@@ -20,7 +19,7 @@ export const SignUpForm = () => {
     // const {login} = useAuth();
     const navigate = useNavigate();
 
-    const updateAuthData = (e: FormEvent<HTMLInputElement>) => {
+    const updateAuthData = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSignUpFormData({
             ...signUpFormData,
             [e.currentTarget.name]: e.currentTarget.value
@@ -75,8 +74,8 @@ export const SignUpForm = () => {
                         <div className={'top-[15px] w-[130px] h-[1px] bg-[#808080]'}></div>
                     </div>
 
-                    <Button buttonType={'secondary'}
-                            icon={<SvgIcon><GoogleIcon/></SvgIcon>}
+                    <Button
+                            startIcon={<SvgIcon><GoogleIcon/></SvgIcon>}
                             onClick={googleSignup}>Sign
                         in with
                         Google</Button>
