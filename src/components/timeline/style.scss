@@ -1,0 +1,56 @@
+.time-line-ctnr {
+  width: 40vw;
+  margin: 0 auto;
+
+  .time-line {
+    position: relative;
+    margin: 0 0 0px 0;
+    padding: 0;
+    list-style: none;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: -24px;
+      width: 2px;
+      background: #3498db;
+      left: 32px;
+      border-radius: 2px;
+    }
+
+    > .time-label {
+      > span {
+        font-weight: 600;
+        padding: 5px 10px;
+        display: inline-block;
+        background-color: #99c1c6;
+        color: #fff;
+        border-radius: 2px;
+        font-size: 14px;
+      }
+    }
+
+    > li {
+      position: relative;
+      margin-bottom: 10px;
+      margin-right: 0;
+    }
+  }
+}
+
+.timeline-item {
+  &-point{
+    position: absolute;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    left: 28px;
+    top: 9px;
+  }
+  &-content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 50px;
+  }
+}

@@ -1,21 +1,14 @@
 import {
-    Avatar,
-    Box,
-    Card, Divider,
-    // FormControl,
+    Box, Button,
+    Fab,
     Grid,
-    IconButton, ListItemIcon, Menu, MenuItem,
-    // InputLabel,
-    // MenuItem,
-    // Select,
-    // SelectChangeEvent,
-    Stack,
+    Menu,
+    MenuItem,
     styled,
     TextField
 } from "@mui/material";
-import {TimePicker} from "@mui/x-date-pickers";
-import dayjs, {Dayjs} from "dayjs";
-import React, {useState} from "react";
+import dayjs from "dayjs";
+import React, {ChangeEvent, useState} from "react";
 import ImageSharpIcon from '@mui/icons-material/ImageSharp';
 import AddReactionSharpIcon from '@mui/icons-material/AddReactionSharp';
 import MoodBadTwoToneIcon from '@mui/icons-material/MoodBadTwoTone';
@@ -24,6 +17,7 @@ import SentimentDissatisfiedTwoToneIcon from '@mui/icons-material/SentimentDissa
 import SentimentNeutralTwoToneIcon from '@mui/icons-material/SentimentNeutralTwoTone';
 import SentimentSatisfiedTwoToneIcon from '@mui/icons-material/SentimentSatisfiedTwoTone';
 import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import {MobileDateTimePicker} from '@mui/x-date-pickers';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -37,17 +31,35 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-export const DayViewPostForm = () => {
-    const [value, setValue] = useState<Dayjs | null>(null);
 
-    // const [eventType, setEventType] = useState('');
-    //
-    // const handleChange = (event: SelectChangeEvent) => {
-    //     setEventType(event.target.value as string);
-    // };
+export type DayViewFormDataType = {
+    time: string,
+    title: string,
+    description: string;
+}
+
+type DayViewPostFormProps = {
+    onSubmit: (event: DayViewFormDataType) => void,
+}
+
+export const DayViewPostForm = ({onSubmit}: DayViewPostFormProps) => {
+    const [formData, setFormData] = useState<DayViewFormDataType>({
+        time: dayjs().format(),
+        title: '',
+        description: '',
+    } as DayViewFormDataType);
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
+    const handleFieldChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setFormData({...formData, [event.target.name]: event.target.value})
+    }
+
+    const handleOnSubmit = () => {
+        onSubmit(formData);
+        handleClose();
+    }
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -55,55 +67,55 @@ export const DayViewPostForm = () => {
         setAnchorEl(null);
     };
 
-    return <Grid item sx={{width: '700px',}}>
-        <Card sx={{
-            padding: '30px',
-            maxWidth: '700px',
-        }}>
+    return <Grid item sx={{width: '600px'}}>
+        <Box
+            component="form"
+            sx={{
+                padding: '30px',
+                maxWidth: '600px',
+            }}>
             <TextField
+                name={'title'}
+                onChange={handleFieldChange}
+                sx={{
+                    mb: 4
+                }}
+                label="Event"
+                variant="outlined"
+                fullWidth
+            />
+            <TextField
+                name={'description'}
+                onChange={handleFieldChange}
                 sx={{
                     mb: 4
                 }}
                 id="filled-multiline-flexible"
-                label="How was your day?"
+                label="Description"
                 multiline
                 fullWidth
                 rows={4}
             />
 
-            <Box component="div" sx={{mb: 2}}>
-                <Stack direction="row" spacing={2}>
-                    <TimePicker
-                        value={value}
-                        onChange={setValue}
-                        referenceDate={dayjs('2022-04-17')}
-                    />
-                    {/*<FormControl fullWidth>*/}
-                    {/*    <InputLabel id="demo-simple-select-label">Event</InputLabel>*/}
-                    {/*    <Select*/}
-                    {/*        labelId="demo-simple-select-label"*/}
-                    {/*        id="demo-simple-select"*/}
-                    {/*        value={eventType}*/}
-                    {/*        label="Age"*/}
-                    {/*        onChange={handleChange}*/}
-                    {/*    >*/}
-                    {/*        <MenuItem value={10}>Ten</MenuItem>*/}
-                    {/*        <MenuItem value={20}>Twenty</MenuItem>*/}
-                    {/*        <MenuItem value={30}>Thirty</MenuItem>*/}
-                    {/*    </Select>*/}
-                    {/*</FormControl>*/}
-                </Stack>
+            <Box component="div" sx={{mb: 4, width: '50%'}}>
+                <MobileDateTimePicker
+                    sx={{
+                        width: '100%'
+                    }}
+                    defaultValue={dayjs()}
+                    onChange={(value) => setFormData({...formData, time: dayjs(value).format()})}
+                />
             </Box>
 
-            <Box component="div" sx={{p: 2}}>
-                <IconButton color="primary" component="label" size="large">
+            <Box component="div" sx={{'& > :not(style)': {mb: 4}}}>
+                <Fab color="primary" component="label" size="large">
                     <ImageSharpIcon/>
                     <VisuallyHiddenInput type="file"/>
-                </IconButton>
+                </Fab>
 
-                <IconButton color="primary" component="label" size="large" onClick={handleClick}>
+                <Fab color="primary" component="label" size="large" onClick={handleClick}>
                     <AddReactionSharpIcon/>
-                </IconButton>
+                </Fab>
                 <Menu
                     anchorEl={anchorEl}
                     id="account-menu"
@@ -130,13 +142,14 @@ export const DayViewPostForm = () => {
                     </MenuItem>
                 </Menu>
 
-                <IconButton color="primary" component="label" size="large">
+                <Fab color="primary" component="label" size="large">
                     <AddLocationAltIcon/>
-                </IconButton>
+                </Fab>
 
             </Box>
-        </Card>
+            <Box>
+                <Button onClick={handleOnSubmit}>Add</Button>
+            </Box>
+        </Box>
     </Grid>
-
-
 }

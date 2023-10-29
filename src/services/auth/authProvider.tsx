@@ -20,7 +20,7 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 type AuthProviderProps = {
-    children: ReactNode[],
+    children: ReactNode,
     userData: UserType,
 }
 

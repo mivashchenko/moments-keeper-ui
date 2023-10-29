@@ -14,12 +14,29 @@ import AuthCallback from "@/pages/google_auth_callback/GoogleAuthCallback.tsx";
 import {HomeLayout} from "@/layouts/homeLayout.tsx";
 import axiosClient from "@/axios.ts";
 import {Profile} from "@/pages/profile/Profile.tsx";
-import {DayViewPage} from "@/pages/day_view";
+import {TimelinePage} from "src/pages/timeline";
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+
+import dayjs from "dayjs";
+import objectSupportPlugin from "dayjs/plugin/objectSupport";
+import durationPlugin from "dayjs/plugin/duration";
+import isBetweenPlugin from "dayjs/plugin/isBetween";
+import localizedFormatPlugin from "dayjs/plugin/localizedFormat";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import relativeTimePlugin from "dayjs/plugin/relativeTime";
+import utcPlugin from "dayjs/plugin/utc";
+
+dayjs.extend(objectSupportPlugin);
+dayjs.extend(durationPlugin);
+dayjs.extend(isBetweenPlugin);
+dayjs.extend(localizedFormatPlugin);
+dayjs.extend(relativeTimePlugin);
+dayjs.extend(utcPlugin);
+dayjs.extend(customParseFormat);
 
 const getUserData = async () => {
     return await axiosClient.post('auth/user').then(res => {
@@ -47,7 +64,7 @@ export const router = createBrowserRouter(
             </Route>
 
             <Route path="/view" element={<ProtectedLayout/>}>
-                <Route path="day" element={<DayViewPage/>}/>
+                <Route path="timeline" element={<TimelinePage/>}/>
                 <Route path="profile" element={<Profile/>}/>
                 <Route path="settings" element={<div>Settings</div>}/>
                 {/*<Route path="calendar" element={<RoundCalendarPage/>}/>*/}
