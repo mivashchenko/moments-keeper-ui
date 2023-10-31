@@ -1,6 +1,4 @@
 .time-line-ctnr {
-  width: 40vw;
-  margin: 0 auto;
 
   .time-line {
     position: relative;
@@ -52,5 +50,12 @@
     display: flex;
     flex-direction: column;
     margin-left: 50px;
+  }
+
+  &-week {
+
+    &-card {
+      display: flex;
+    }
   }
 }

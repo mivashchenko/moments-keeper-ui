@@ -1,4 +1,4 @@
-import dayjs, {OpUnitType} from "dayjs";
+import dayjs from "dayjs";
 import {TimelineItem} from "./timeline_item.tsx";
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import {groupBy} from 'underscore';
