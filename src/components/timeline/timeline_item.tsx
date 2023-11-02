@@ -1,131 +1,146 @@
-import {TimelineEventType} from "@/types";
-import {TimelineViewType} from "@/components/timeline/timeline.tsx";
-import {Card, Typography} from "@mui/material";
-import PanoramaFishEyeIcon from '@mui/icons-material/PanoramaFishEye';
-import {groupBy} from "underscore";
+import { TimelineEventType } from "@/types";
+import { TimelineViewType } from "@/components/timeline/timeline.tsx";
+import { Box, Card, Paper, Stack, styled, Typography } from "@mui/material";
+import PanoramaFishEyeIcon from "@mui/icons-material/PanoramaFishEye";
 import dayjs from "dayjs";
+import { getDatesInMonthDisplay } from "@/components/timeline/components/calendar_month_layout/calendar_month_layout.tsx";
+import { TimelineItemDays } from "src/components/timeline/components/timeline_item_days";
+import { TimelineItemHours } from "@/components/timeline/components/timeline_item_hours";
 
+export type ContentRendererProps = {
+  title: string;
+  description: string;
+};
+
+export type MonthContentRendererProps = {
+  events: TimelineEventType[];
+  month: number;
+  formattedEvents: TimelineEventType[];
+  // content: TimelineEventType
+};
 
 type TimelineItemProps = {
-    view: TimelineViewType,
-    events: TimelineEventType[],
-}
+  view: TimelineViewType;
+  events: TimelineEventType[];
+  formattedEvents: TimelineEventType[];
+};
 
-const contentRenderer = ({title, description}: ContentRendererProps) => {
-    return <div>
-        <Typography variant="h6" gutterBottom>
-            {title}
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-            {description}
-        </Typography>
-    </div>
-}
+const Item = styled(Box)(({ theme, currentMonth, isPrimaryColor }) => ({
+  backgroundColor: currentMonth
+    ? isPrimaryColor
+      ? theme.palette.primary.main
+      : "#fff"
+    : "transparent",
+  ...theme.typography.body2,
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+  width: "50px",
+  height: "50px",
+}));
 
-export type WeekContentRendererProps = {
-    title: string,
-    description: string,
-    dayLabel: string,
-}
+const monthContentRenderer = ({
+  events,
+  formattedEvents,
+}: MonthContentRendererProps) => {
+  const month = dayjs(events[0].time).month();
+  const year = dayjs(events[0].time).year();
+  const weeks = getDatesInMonthDisplay(month, year);
 
-const weekContentRenderer = ({title, description, dayLabel}: WeekContentRendererProps) => {
-    return <div>
-        {/*<Typography variant="h6" gutterBottom>*/}
-        {/*    {title}*/}
-        {/*</Typography>*/}
-        {/*<Typography variant="body1" gutterBottom>*/}
-        {/*    {description}*/}
-        {/*</Typography>*/}
-        {dayLabel}
-    </div>
-}
+  return weeks.map((week) => {
+    return (
+      <Stack direction={"row"}>
+        {week.map((day, index) => {
+          const includesEvent = formattedEvents.find((event) => {
+            return dayjs(event.time).date() === dayjs(day.date).date();
+          });
+          return (
+            <Item
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              key={index}
+              currentMonth={day.currentMonth}
+              isPrimaryColor={includesEvent}
+            >
+              {day.currentMonth ? dayjs(day.date).date() : ""}
+            </Item>
+          );
+        })}
+      </Stack>
+    );
+  });
+};
 
-type WeekCardProps = {
-    events: TimelineEventType[],
-}
+const TimelineItemWrap = styled(Box)((props) => ({
+  marginTop: "18px",
+  marginLeft: "70px",
+}));
 
-const WeekCard = ({events}: WeekCardProps) => {
-    console.log(events);
-    const days = [0, 1, 2, 3, 4, 5, 6];
-    const weekEvents = groupBy(events, (event) => {
-        return dayjs(event.time).day();
-    })
-    return <div className="timeline-item-week-card">
-        {days.map((day) => {
-            const weekDayEvents = weekEvents[day] || [];
-            return <Card>
-                {
-                    weekDayEvents.map(
-                        (event) => {
-                            const dayLabel = dayjs().day(day).format('dddd');
-                            return <div>
-                                <span className="time">{event.time}</span>
-                                <div className="timeline-item-content">{weekContentRenderer({
-                                    ...event.content,
-                                    dayLabel
-                                })}</div>
-                            </div>
-                        }
-                    )
-                }
-            </Card>
-            // return <div>
-            //     {weekDayEvents.map((event) => {
-            //             return <div>
-            //     <span className="time">
-            //         {event.time}
-            //     </span>
-            //                 <div className="timeline-item-content">{contentRenderer(event.content)}</div>
-            //             </div>
-            //         }
-            //     )}
-            // </div>
-        })
-        }
-    </div>
-}
+export const TimelineItem = ({
+  events,
+  view,
+  formattedEvents,
+}: TimelineItemProps) => {
+  if (view === "days") {
+    return (
+      <TimelineItemWrap>
+        <TimelineItemHours
+          key={"days"}
+          events={events}
+          formattedEvents={formattedEvents}
+        />
+      </TimelineItemWrap>
+    );
+  }
 
-export const TimelineItem = ({events, view}: TimelineItemProps) => {
+  if (view === "weeks") {
+    return (
+      <TimelineItemWrap>
+        <TimelineItemHours events={events} />
+      </TimelineItemWrap>
+    );
+  }
 
-    if (view === 'day') {
-        return events.map((event) => {
-            return <li className={'timeline-item-wrap'}>
-                <PanoramaFishEyeIcon sx={{fontSize: 10}} className={'timeline-item-point'}/>
-                <div className="timeline-item">
-                    <div className="timeline-item-content">
-                        <span className="time">
-                            {event.time}
-                        </span>
-                        {contentRenderer(event.content)}
-                    </div>
-                </div>
-            </li>
-        })
-    }
-    if (view === 'week') {
+  // if (view === "day") {
+  //   return <TimelineItemDays events={events} />;
+  // }
+  // if (view === "week") {
+  //   return (
+  //     <li className={"timeline-item-wrap"}>
+  //       <i className="fa" />
+  //       <div>
+  //         {events.map((event) => {
+  //           return (
+  //             <div className="timeline-item">
+  //               <span className="time">{event.time}</span>
+  //               <div className="timeline-item-content">
+  //                 {contentRenderer(event.content)}
+  //               </div>
+  //             </div>
+  //           );
+  //         })}
+  //       </div>
+  //     </li>
+  //   );
+  // }
 
-        return <li className={'timeline-item-wrap'}>
-            <PanoramaFishEyeIcon sx={{fontSize: 10}} className={'timeline-item-point'}/>
-            <div>
-                <WeekCard events={events}/>
-            </div>
-        </li>
-    }
-
-    if (view === 'month') {
-
-        return <li className={'timeline-item-wrap'}>
-            <PanoramaFishEyeIcon className={'timeline-item-point'}/>
-            <div>
-                {events.map((event) => {
-                    return <div className="timeline-item">
-                    <span className="time">
-                        {event.time}
-                    </span>
-                        <div className="timeline-item-content">{contentRenderer(event.content)}</div>
-                    </div>
-                })}
-            </div>
-        </li>
-    }
-}
+  // if (view === "month") {
+  //   return (
+  //     <li className={"timeline-item-wrap"}>
+  //       <PanoramaFishEyeIcon
+  //         color={"primary"}
+  //         className={"timeline-item-point"}
+  //       />
+  //       <Box
+  //         sx={{
+  //           marginLeft: "100px",
+  //         }}
+  //       >
+  //         {monthContentRenderer({ events, formattedEvents })}
+  //       </Box>
+  //     </li>
+  //   );
+  // }
+};
