@@ -4,10 +4,16 @@ import AddCircleOutlineSharpIcon from "@mui/icons-material/AddCircleOutlineSharp
 import { groupBy } from "underscore";
 import "./style.scss";
 import { Box, IconButton } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache,
+  List,
+} from "react-virtualized";
 import { TimelineEventType } from "@/types";
 import { DayViewFormDataType } from "@/pages/timeline/components/day_view_post_form/TimelineAddEventForm.tsx";
-import { VariableSizeList, ListChildComponentProps } from "react-window";
+// import { VariableSizeList, ListChildComponentProps } from "react-window";
 import { TimelineAddEventModal } from "@/components/timeline/components/timeline_add_event_modal";
 
 export type TimelineViewType = "hour" | "day" | "week" | "month";
@@ -28,21 +34,18 @@ const weekAndDay = (date: string) => {
 };
 
 const formattedByView = {
-  hour: (date: string) =>
+  days: (date: string) =>
     dayjs(date).set("hour", 0).set("minute", 0).set("second", 0).format(),
   day: (date: string) =>
     dayjs(date).set("hour", 0).set("minute", 0).set("second", 0).format(),
-  week: (date: string) =>
+  weeks: (date: string) =>
     weekAndDay(date) + " week of " + dayjs(date).format("MM-YYYY"),
   month: (date: string) => {
     return dayjs(date).format("MMM YYYY");
   },
 };
 
-function getFormattedData(
-  events: TimelineEventType[],
-  view: TimelineViewType = "day",
-) {
+function getFormattedData(events: TimelineEventType[], view: TimelineViewType) {
   return events.map((event) => {
     return {
       ...event,
@@ -70,58 +73,83 @@ export const Timeline = ({ view, events, onAddEventClick }: TimelineProps) => {
     setAddNewItemModalOpened(false);
   };
 
-  const renderRow = React.memo(
-    ({ data, index, style }: ListChildComponentProps) => {
-      const key = data[index];
-      return (
-        <ul className="time-line" key={key} style={style}>
+  const [list, setList] = useState([]);
+
+  useEffect(() => {
+    setList(
+      Object.keys(groupedEvents).map((groupedEventKey) => ({
+        groupedEventKey,
+        isExpanded: false,
+      })),
+    );
+  }, []);
+
+  const listRef = useRef();
+
+  const rowRenderer = (props) => {
+    const { index, key, style } = props;
+    const item = list[index];
+    return (
+      <ul className="timeline" key={key} style={style}>
+        <div
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            setList((prevState) => {
+              const newList = [...prevState];
+              newList[index] = {
+                ...newList[index],
+                isExpanded: !newList[index].isExpanded,
+              };
+              return [...newList];
+            });
+            listRef.current.recomputeRowHeights();
+            listRef.current.forceUpdateGrid();
+          }}
+        >
           <li className="time-label">
-            <span>{key}</span>
+            <span>{item.groupedEventKey}</span>
           </li>
           <TimelineItem
             view={view}
-            events={groupedEvents[key]}
+            events={groupedEvents[item.groupedEventKey]}
             formattedEvents={formattedEvents}
           />
-        </ul>
-      );
-    },
-  );
+          {item.isExpanded && (
+            <div style={{ height: "100px", background: "red" }}>fsdfsdf</div>
+          )}
+        </div>
+      </ul>
+    );
+  };
 
-  const rowHeights = Object.values(groupedEvents).map((event) => {
-    return event.length * (394.06 + 31 + 31);
-  });
+  const rowHeight = ({ index }) => {
+    return list[index].isExpanded ? 200 : 120;
+  };
 
-  const { innerHeight, innerWidth } = window;
   return (
     <div
       className="time-line-ctnr"
       style={{
-        height: `${innerHeight - 73 - 48}px`,
+        height: `calc(100vh - ${73 + 48}px)`,
         width: "100%",
         overflow: "hidden",
       }}
     >
-      <VariableSizeList
-        height={innerHeight - 73}
-        width={"100%"}
-        itemSize={(index: number) => rowHeights[index]}
-        itemCount={Object.keys(groupedEvents).length}
-        itemData={Object.keys(groupedEvents)}
-      >
-        {renderRow}
-      </VariableSizeList>
-
-      <IconButton
-        sx={{ marginLeft: "9px" }}
-        color="primary"
-        size="large"
-        onClick={() => {
-          setAddNewItemModalOpened(true);
-        }}
-      >
-        <AddCircleOutlineSharpIcon />
-      </IconButton>
+      <AutoSizer>
+        {({ width, height }) => (
+          <List
+            ref={listRef}
+            overscanRowCount={5}
+            rowCount={list.length}
+            rowHeight={rowHeight}
+            rowRenderer={rowRenderer}
+            width={width}
+            height={height}
+          />
+        )}
+      </AutoSizer>
 
       <TimelineAddEventModal
         isOpened={addNewItemModalOpened}

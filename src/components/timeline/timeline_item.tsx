@@ -74,6 +74,7 @@ const monthContentRenderer = ({
 };
 
 const TimelineItemWrap = styled(Box)((props) => ({
+  marginTop: "18px",
   marginLeft: "70px",
 }));
 
@@ -82,7 +83,19 @@ export const TimelineItem = ({
   view,
   formattedEvents,
 }: TimelineItemProps) => {
-  if (view === "hour") {
+  if (view === "days") {
+    return (
+      <TimelineItemWrap>
+        <TimelineItemHours
+          key={"days"}
+          events={events}
+          formattedEvents={formattedEvents}
+        />
+      </TimelineItemWrap>
+    );
+  }
+
+  if (view === "weeks") {
     return (
       <TimelineItemWrap>
         <TimelineItemHours events={events} />
@@ -90,9 +103,9 @@ export const TimelineItem = ({
     );
   }
 
-  if (view === "day") {
-    return <TimelineItemDays events={events} />;
-  }
+  // if (view === "day") {
+  //   return <TimelineItemDays events={events} />;
+  // }
   // if (view === "week") {
   //   return (
   //     <li className={"timeline-item-wrap"}>
@@ -113,21 +126,21 @@ export const TimelineItem = ({
   //   );
   // }
 
-  if (view === "month") {
-    return (
-      <li className={"timeline-item-wrap"}>
-        <PanoramaFishEyeIcon
-          color={"primary"}
-          className={"timeline-item-point"}
-        />
-        <Box
-          sx={{
-            marginLeft: "100px",
-          }}
-        >
-          {monthContentRenderer({ events, formattedEvents })}
-        </Box>
-      </li>
-    );
-  }
+  // if (view === "month") {
+  //   return (
+  //     <li className={"timeline-item-wrap"}>
+  //       <PanoramaFishEyeIcon
+  //         color={"primary"}
+  //         className={"timeline-item-point"}
+  //       />
+  //       <Box
+  //         sx={{
+  //           marginLeft: "100px",
+  //         }}
+  //       >
+  //         {monthContentRenderer({ events, formattedEvents })}
+  //       </Box>
+  //     </li>
+  //   );
+  // }
 };

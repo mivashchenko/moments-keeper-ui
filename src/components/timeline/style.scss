@@ -1,8 +1,8 @@
 .time-line-ctnr {
 
-  .time-line {
+  .timeline {
     position: relative;
-    margin: 0 0 0px 0;
+    margin: 0 0 0 10%;
     padding: 0;
     list-style: none;
 
@@ -17,7 +17,7 @@
       border-radius: 2px;
     }
 
-    > .time-label {
+    .time-label {
       > span {
         font-weight: 600;
         padding: 5px 10px;

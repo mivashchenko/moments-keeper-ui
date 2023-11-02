@@ -1,11 +1,11 @@
 export const getSunriseSunsetColor = (hour) => {
   // Define colors for different times of the day
   const colors = {
-    0: "#191970", // Midnight (black)
-    6: "#f2d68c", // Sunrise (orange)
-    12: "#FFFF00", // Noon (yellow)
-    18: "#d8758d", // Sunset (orange)
-    24: "#191970", // Midnight (black)
+    0: "#99c1c6", // Midnight (black)
+    6: "#8bbcc2", // Sunrise (orange)
+    12: "#81b8be", // Noon (yellow)
+    18: "#8bbcc2", // Sunset (orange)
+    24: "#99c1c6", // Midnight (black)
   };
 
   // Find the two closest times

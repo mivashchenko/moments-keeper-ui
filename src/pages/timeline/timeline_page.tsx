@@ -148,7 +148,7 @@ const additionalEvents = [
     },
   },
   {
-    time: "2023-09-25T13:30:00.000Z",
+    time: "2023-09-25T23:45:00.000Z",
     content: {
       title: "Tech Conference Attendance",
       description:
@@ -159,7 +159,7 @@ const additionalEvents = [
 
 export const TimelinePage = () => {
   const [events, setEvents] = useState<TimelineEventType[]>(additionalEvents);
-  const [selectedView, setSelectedView] = useState<TimelineViewType>("hour");
+  const [selectedView, setSelectedView] = useState<TimelineViewType>("days");
 
   const handleAddEventClick = ({
     time,
@@ -179,7 +179,7 @@ export const TimelinePage = () => {
     setEvents(newEvents);
   };
 
-  const views: TimelineViewType[] = ["hour", "day", "week", "month"];
+  const views: TimelineViewType[] = ["days", "weeks"];
 
   const handleViewChange = (view: TimelineViewType) => () => {
     setSelectedView(view);
