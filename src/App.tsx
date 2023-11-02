@@ -29,6 +29,7 @@ import localizedFormatPlugin from "dayjs/plugin/localizedFormat";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import relativeTimePlugin from "dayjs/plugin/relativeTime";
 import utcPlugin from "dayjs/plugin/utc";
+import weekdayPlugin from "dayjs/plugin/weekday";
 
 dayjs.extend(objectSupportPlugin);
 dayjs.extend(durationPlugin);
@@ -37,6 +38,7 @@ dayjs.extend(localizedFormatPlugin);
 dayjs.extend(relativeTimePlugin);
 dayjs.extend(utcPlugin);
 dayjs.extend(customParseFormat);
+dayjs.extend(weekdayPlugin);
 
 const getUserData = async () => {
     return await axiosClient.post('auth/user').then(res => {
