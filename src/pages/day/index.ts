@@ -1,1 +1,0 @@
-export {DayPage} from './dayPage.tsx';

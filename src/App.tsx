@@ -30,6 +30,8 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "react-virtualized/styles.css";
+import { DayPreviewPage } from "@/pages/day_preview/day_preview.tsx";
+import "exif-js";
 
 dayjs.extend(objectSupportPlugin);
 dayjs.extend(durationPlugin);
@@ -71,6 +73,7 @@ export const router = createBrowserRouter(
 
       <Route path="/view" element={<ProtectedLayout />}>
         <Route path="timeline" element={<TimelinePage />} />
+        <Route path="day-preview" element={<DayPreviewPage />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<div>Settings</div>} />
         {/*<Route path="calendar" element={<RoundCalendarPage/>}/>*/}

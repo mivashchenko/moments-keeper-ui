@@ -39,6 +39,10 @@ export const ProtectedLayout = () => {
       <List>
         {[
           {
+            label: "Day Preview",
+            url: "/view/day-preview",
+          },
+          {
             label: "Timeline",
             url: "/view/timeline",
           },
